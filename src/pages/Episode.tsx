@@ -13,6 +13,9 @@ import Quote from "../components/Quote";
 import { challengeContext } from "../utils/challengeContext";
 import { winnerQuotes } from "../utils/winnerQuotes";
 import { eliminationQuotes } from "../utils/eliminationQuotes";
+import { lipsync } from "../utils/lipsync"; // Narrativa do lipsync
+import { ruquotes } from "../utils/ruquotes"; // Falas da RuPaul para eliminadas
+import { eliminations } from "../utils/eliminations"; // Quotes das queens eliminadas
 
 const EpisodePage = () => {
   const { id } = useParams<{ id: string }>(); // Pegando o ID da URL
@@ -98,6 +101,34 @@ const EpisodePage = () => {
   const getRandomCritique = (type: "positive" | "negative") => {
     const critiqueArray = rucritiques[type];
     return critiqueArray[Math.floor(Math.random() * critiqueArray.length)];
+  };
+
+  // Função para pegar uma fala aleatória de RuPaul ao eliminar uma queen
+  const getRandomRuEliminationQuote = (name: string) => {
+    return ruquotes[Math.floor(Math.random() * ruquotes.length)].replace(
+      "{name}",
+      name
+    );
+  };
+
+  // Função para pegar uma fala aleatória de uma queen eliminada
+  const getRandomQueenEliminationQuote = () => {
+    return eliminations[Math.floor(Math.random() * eliminations.length)];
+  };
+
+  // Função para selecionar a narrativa do lipsync com base na diferença de pontuação
+  const getLipsyncNarrative = (
+    queen1: string,
+    queen2: string,
+    score1: number,
+    score2: number
+  ) => {
+    const diff = Math.abs(score1 - score2);
+    const category = diff > 10 ? "bigdifference" : "paired";
+    const narratives = lipsync.losing[category];
+    return narratives[Math.floor(Math.random() * narratives.length)]
+      .replace("{name1}", queen1)
+      .replace("{name2}", queen2);
   };
 
   return (
@@ -225,6 +256,16 @@ const EpisodePage = () => {
           the other girls.
         </h2>
 
+        <h2 className="text-xl font-bold my-4 text-purple-400">
+          RuPaul's Judgement
+        </h2>
+
+        {episode.bottom3.map((queen) => (
+          <p key={queen.name} className="text-gray-300 italic my-2">
+            {getRandomCritique("negative").replace("{name}", queen.name)}
+          </p>
+        ))}
+
         {/* Queens up for elimination */}
         <h2 className="text-xl font-bold my-4 text-red-400">
           The bottom queens react...
@@ -266,6 +307,64 @@ const EpisodePage = () => {
             ] || "Oh thank Ru, I was NOT ready to lip sync tonight!"
           }
         />
+
+        <h2 className="text-xl font-bold mt-4 text-red-400">
+          Lipsync for your lives!
+        </h2>
+
+        <p className="text-gray-300">
+          Two queens stand before me... Ladies, this is your last chance to
+          impress me and save yourself from elimination. The time has come for
+          you to lip sync for your life. Good luck and don't fuck it up.
+        </p>
+
+        <p className="text-gray-300 italic my-4 font-medium">
+          {getLipsyncNarrative(
+            episode.lipsync.winner.name,
+            episode.lipsync.eliminated?.name || "",
+            episode.scores.find(
+              (s) => s.queen.name === episode.lipsync.winner.name
+            )?.final || 0,
+            episode.scores.find(
+              (s) => s.queen.name === episode.lipsync.eliminated?.name
+            )?.final || 0
+          )}
+        </p>
+
+        <h2 className="text-xl font-bold mt-4 text-green-400">
+          Ladies, I've made my decision. {episode.lipsync.winner.name}, shantay
+          you stay! You may join the other girls.
+        </h2>
+
+        {/* Quote da Queen vencedora do lipsync */}
+        <Quote
+          queen={episode.lipsync.winner}
+          quote={
+            episode.lipsync.winner.wins > 2
+              ? lipsync.winning.assassin[
+                  Math.floor(Math.random() * lipsync.winning.assassin.length)
+                ].replace("{wins}", episode.lipsync.winner.wins.toString())
+              : lipsync.winning.general[
+                  Math.floor(Math.random() * lipsync.winning.general.length)
+                ]
+          }
+        />
+
+        {/* Caso haja eliminação */}
+        {episode.lipsync.eliminated && (
+          <>
+            <h2 className="text-xl font-bold mt-4 text-red-400">
+              {episode.lipsync.eliminated.name},{" "}
+              {getRandomRuEliminationQuote(episode.lipsync.eliminated.name)}
+            </h2>
+            <h2 className="text-xl font-bold text-red-500">Sashay away.</h2>
+
+            <Quote
+              queen={episode.lipsync.eliminated}
+              quote={getRandomQueenEliminationQuote()}
+            />
+          </>
+        )}
 
         <button
           onClick={() => navigate(`/season/episode/${episodeId + 1}`)}

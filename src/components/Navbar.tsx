@@ -17,7 +17,7 @@ const Navbar = () => {
           <Link to="/casting" className="text-white hover:underline">
             Casting
           </Link>
-          <Link to="/season" className="text-white hover:underline">
+          {/* <Link to="/season" className="text-white hover:underline">
             Start Season
           </Link>
           <Link to="/season/reunion" className="text-white hover:underline">
@@ -25,7 +25,7 @@ const Navbar = () => {
           </Link>
           <Link to="/season/finale" className="text-white hover:underline">
             Finale
-          </Link>
+          </Link> */}
         </div>
       </div>
     </nav>
