@@ -1,0 +1,21 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+progress {
+    border-radius: 2rem;
+    height: 16px;
+}
+
+progress::-webkit-progress-bar {
+    background-color: #bebebe;
+    border-radius: 2rem;
+    }
+
+progress::-webkit-progress-value {
+    background-color: rgb(109, 23, 102);
+    border-radius: 2rem;
+}
+
+progress::-moz-progress-bar {
+    /* style rules */
+}
