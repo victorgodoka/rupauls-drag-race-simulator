@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Create from "./pages/Create";
 import Casting from "./pages/Casting";
@@ -10,7 +10,7 @@ import Layout from "./components/Layout";
 
 const App = () => {
   return (
-    <Router>
+    <HashRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
@@ -22,7 +22,7 @@ const App = () => {
           {/* <Route path="/season/finale" element={<Finale />} /> */}
         </Route>
       </Routes>
-    </Router>
+    </HashRouter>
   );
 };
 
